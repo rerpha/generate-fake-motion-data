@@ -68,7 +68,7 @@ if __name__ == "__main__":
             )
         )
 
-    with open("names.csv", "w", newline="") as csvfile:
+    with open("sensors.csv", "w", newline="") as csvfile:
         fieldnames = [
             "update_id",
             "motor_id",
