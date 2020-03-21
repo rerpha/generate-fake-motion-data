@@ -43,12 +43,12 @@ if __name__ == "__main__":
 
         failure_desc = FailureDescription.NONE
         ran = randint(0, 20)
-        if temp >= 60:
+        if temp >= 90 or last_oiled > 10:
+            failure_desc = FailureDescription.SEIZE
+        elif temp >= 80:
             failure_desc = FailureDescription.OVERHEAT
         elif ran == 3:
             failure_desc = FailureDescription.CONTAMINATED
-        elif temp > 80 or last_oiled > 10:
-            failure_desc = FailureDescription.SEIZE
         elif last_homed > 80:
             failure_desc = FailureDescription.RESISTANCE
         elif ran == 2:
