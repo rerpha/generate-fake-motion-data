@@ -2,7 +2,7 @@ from random import randint, random
 
 import attr
 import csv
-
+import datetime
 # goal - predict remaining useful lifetime(RUL) for motors used in beamline motion axis
 
 
@@ -32,13 +32,16 @@ if __name__ == "__main__":
     motors = [i for i in range(1, 16)]
     rows = []
 
-    for i in range(1000):
+    timestamp = (datetime.datetime(2014, 11, 22, 14, 42, 21, 34435, tzinfo=datetime.timezone.utc) - datetime.datetime(1970, 1, 1,tzinfo=datetime.timezone.utc)).total_seconds()
+
+    for i in range(100000):
         speed = randint(1, 3600)
         temp = (speed / 30) * random()
 
         last_oiled = 0  # todo: tolerances
         last_homed = 0  # todo: timestamps
-        update_timestamp = 0
+        update_timestamp = timestamp
+        timestamp += float(0.5)
         motor_id = 0  # todo: ids
 
         failure_desc = FailureDescription.NONE
