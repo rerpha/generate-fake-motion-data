@@ -2,7 +2,6 @@ from random import randint, random
 
 import attr
 import csv
-import json
 
 # goal - predict remaining useful lifetime(RUL) for motors used in beamline motion axis
 
@@ -22,10 +21,10 @@ class Row:
     update_id = attr.ib(type=int)
     motor_id = attr.ib(type=int)
     peak_speed = attr.ib(type=int)  # rpm
-    last_oiled = attr.ib(type=str)  # timestamp
-    last_homed = attr.ib(type=str)  # timestamp
-    update_timestamp = attr.ib(type=str)  # timestamp
-    peak_temperature = attr.ib(type=str)  # cm/s
+    last_oiled = attr.ib(type=int)  # timestamp
+    last_homed = attr.ib(type=int)  # timestamp
+    update_timestamp = attr.ib(type=int)  # timestamp
+    peak_temperature = attr.ib(type=float)  # cm/s
     failure_description = attr.ib(type=str, default=FailureDescription.NONE)
 
 
@@ -35,11 +34,11 @@ if __name__ == "__main__":
 
     for i in range(1000):
         speed = randint(1, 3600)
-        temp = (speed / 300) * random()
+        temp = (speed / 30) * random()
 
-        last_oiled = ""  # todo: tolerances
-        last_homed = ""  # todo: timestamps
-        update_timestamp = ""
+        last_oiled = 0  # todo: tolerances
+        last_homed = 0  # todo: timestamps
+        update_timestamp = 0
         motor_id = 0  # todo: ids
 
         failure_desc = FailureDescription.NONE
@@ -82,4 +81,4 @@ if __name__ == "__main__":
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
 
         for row in rows:
-            writer.writerow(json.load(row))
+            writer.writerow(attr.asdict(row))
