@@ -79,6 +79,7 @@ if __name__ == "__main__":
             "failure_description",
         ]
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+        writer.writeheader()
 
         for row in rows:
             writer.writerow(attr.asdict(row))
