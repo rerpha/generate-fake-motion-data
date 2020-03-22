@@ -22,8 +22,8 @@ class Row:
     update_id = attr.ib(type=int)
     motor_id = attr.ib(type=int)
     peak_speed = attr.ib(type=int)  # rpm
-    last_oiled = attr.ib(type=int)  # timestamp
-    last_homed = attr.ib(type=int)  # timestamp
+    last_oiled = attr.ib(type=float)  # timestamp
+    last_homed = attr.ib(type=float)  # timestamp
     update_timestamp = attr.ib(type=int)  # timestamp
     peak_temperature = attr.ib(type=float)  # cm/s
     failure_description = attr.ib(type=str, default=FailureDescription.NONE)
@@ -38,26 +38,28 @@ if __name__ == "__main__":
         - datetime.datetime(1970, 1, 1, tzinfo=datetime.timezone.utc)
     ).total_seconds()
 
+    last_oiled = (
+        datetime.datetime(2014, 10, 21, 14, 00, 00, 22261, tzinfo=datetime.timezone.utc)
+        - datetime.datetime(1970, 1, 1, tzinfo=datetime.timezone.utc)
+    ).total_seconds()
+
     for i in range(100000):
         speed = randint(1, 3600)
-        temp = (speed / 30) * random()
-
-        last_oiled = 0  # todo: tolerances
+        temp = round((speed / 30) * random(), 2)
 
         update_timestamp = timestamp
-        last_homed = update_timestamp - randint(0, 2000)
-        timestamp += float(0.5)
+        last_homed = int(timestamp - randint(0, 20000))
         motor_id = 0  # todo: ids
 
         failure_desc = FailureDescription.NONE
         ran = randint(0, 20)
         if temp >= 90 and last_oiled > 10:
             failure_desc = FailureDescription.SEIZE
-        elif last_oiled > 10:
+        elif last_oiled < 10:
             failure_desc = FailureDescription.CORROSION
         elif temp >= 80:
             failure_desc = FailureDescription.OVERHEAT
-        elif last_homed < timestamp - 1800:
+        elif last_homed < update_timestamp - 16000:
             failure_desc = FailureDescription.RESISTANCE
         elif ran == 3:
             failure_desc = FailureDescription.CONTAMINATED
@@ -76,6 +78,7 @@ if __name__ == "__main__":
                 failure_desc,
             )
         )
+        timestamp += float(0.5)
 
     with open("sensors.csv", "w", newline="") as csvfile:
         fieldnames = [
